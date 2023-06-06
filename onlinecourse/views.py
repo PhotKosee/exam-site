@@ -132,17 +132,17 @@ def show_exam_result(request, course_id, submission_id):
     total_score = 0
     user_choices = []
 
-    for question in Question.objects.filter(courses = course.id ):
+    for question in Question.objects.filter(course = course.id ):
         total_score += question.grade
 
     for item in submission.choices.all():
         user_choices.append(item)
-        if item.correct:
-            all_answers = Choice.objects.filter(questions = item.questions.id, correct = True)
+        if item.is_correct:
+            all_answers = Choice.objects.filter(question = item.question.id, is_correct = True)
             if len(all_answers) > 0:
-                user_score += get_object_or_404(Question, pk=item.questions.id).grade / len(all_answers)
+                user_score += get_object_or_404(Question, pk=item.question.id).grade / len(all_answers)
             else:
-                user_score += get_object_or_404(Question, pk=item.questions.id).grade
+                user_score += get_object_or_404(Question, pk=item.question.id).grade
         
     try:
         user_score = round(user_score / total_score * 100)
